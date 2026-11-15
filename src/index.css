@@ -1,0 +1,167 @@
+@import 'tailwindcss';
+
+/*
+ * MIND//LAB — tokens de design (Tailwind CSS v4).
+ *
+ * No v4 não existe tailwind.config.js: cada variável em @theme gera
+ * utilitários automaticamente (--color-tc → bg-tc, text-tc, border-tc...).
+ */
+@theme {
+  /* Paleta brutalista */
+  --color-ink: #050506;
+  --color-coal: #0c0c10;
+  --color-ash: #17171d;
+  --color-bone: #ece7dd;
+  --color-mute: #93929a;
+  --color-tc: #e6ff4a;
+  --color-hot: #ff2e4d;
+  --color-cold: #3fd9ff;
+
+  /* Tipografia */
+  --font-display: 'Dela Gothic One', 'Arial Black', sans-serif;
+  --font-condensed: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+  --font-sans: 'Barlow', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Movimento */
+  --animate-slam: slam 180ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
+  --animate-rise: rise 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-blink: blink 1.05s steps(2, jump-none) infinite;
+  --animate-flicker: flicker 2.4s linear infinite;
+  --animate-scan: scan 3.2s linear infinite;
+
+  @keyframes slam {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(1.04);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes blink {
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  @keyframes flicker {
+    0%,
+    92%,
+    100% {
+      opacity: 0.5;
+    }
+    93% {
+      opacity: 1;
+    }
+    96% {
+      opacity: 0.2;
+    }
+  }
+
+  @keyframes scan {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(400%);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --hairline: rgb(255 255 255 / 0.12);
+  }
+
+  html {
+    scrollbar-color: var(--color-ash) var(--color-ink);
+  }
+
+  body {
+    @apply bg-ink font-sans text-bone antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Granulação de filme sobre toda a interface. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    pointer-events: none;
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    mix-blend-mode: screen;
+  }
+
+  ::selection {
+    background: var(--color-tc);
+    color: var(--color-ink);
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-tc);
+    outline-offset: 2px;
+  }
+
+  input,
+  select {
+    font: inherit;
+    color: inherit;
+  }
+}
+
+/* Borda seca de 1px usada em painéis e cards. */
+@utility hairline {
+  border: 1px solid var(--hairline);
+}
+
+/* Canto superior direito chanfrado. */
+@utility chamfer {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 0 100%);
+}
+
+/* Canto inferior esquerdo chanfrado (usado no HUD de arena). */
+@utility chamfer-bl {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+
+@utility grid-lines {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
