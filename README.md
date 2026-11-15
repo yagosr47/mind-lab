@@ -40,6 +40,52 @@ O servidor sobe em <http://localhost:5173>.
 
 ---
 
+## Deploy na Vercel
+
+O projeto é 100% estático (SPA sem backend e sem variáveis de ambiente), então o deploy é direto.
+
+### Pela interface
+
+1. Abra <https://vercel.com/new> e conecte a conta do GitHub, se ainda não conectou.
+2. Importe o repositório `yagosr47/mind-lab`.
+3. A Vercel detecta o preset **Vite**. Confirme:
+   - **Framework Preset**: Vite
+   - **Install Command**: `npm ci`
+   - **Build Command**: `npm run build`
+   - **Output Directory**: `dist`
+   - **Node.js Version**: 22.x (mínimo 20.19)
+4. Clique em **Deploy**. Nenhuma env var é necessária.
+5. Enquanto o PR não estiver mergeado, a produção sai do branch configurado em
+   *Settings → Git → Production Branch*. Para publicar a versão do PR, use o deploy de preview.
+
+O `vercel.json` versionado já fixa framework, comando de instalação, comando de build e diretório
+de saída — a configuração no painel só precisa bater com ele.
+
+### Preview automático por pull request
+
+Depois da conexão, cada push gera uma URL de preview e cada PR recebe o link. O merge na `main`
+atualiza a produção.
+
+### Pela CLI
+
+```bash
+npm i -g vercel
+vercel login
+vercel          # deploy de preview
+vercel --prod   # deploy de produção
+```
+
+### Detalhes que importam
+
+- As fontes entram no bundle (subset latino), então não há dependência de CDN em runtime.
+- O progresso vive no `localStorage`: preview e produção são domínios diferentes, logo têm dados
+  separados. Use **Exportar JSON** / **Importar** na aba de telemetria para migrar.
+- Não há rotas de servidor. As telas são navegação em memória, então não é necessário rewrite para
+  `index.html`; se um dia entrar React Router, adicione o rewrite em `vercel.json`.
+- `npm ci` exige o `package-lock.json`, que está versionado.
+
+---
+
 ## Arquitetura
 
 ```
